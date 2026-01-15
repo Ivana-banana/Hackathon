@@ -12,7 +12,7 @@ def hello():
 
 @bp.route('/author')
 def author():
-    return 'Страница об авторах'
+    return render_template('author.html')
 
 @bp.route('/registration')
 def registration():
