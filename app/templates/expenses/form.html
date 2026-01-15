@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>{{ legend }}</h2>
+
+    <form method="POST">
+        <label>Категория:</label><br>
+        <input type="text" name="category" value="{{ expense.category if expense else '' }}" required>
+        <br><br>
+
+        <label>Сумма:</label><br>
+        <input type="number" name="amount" step="0.01" value="{{ expense.amount if expense else '' }}" required>
+        <br><br>
+
+        <label>Тип оплаты:</label><br>
+        <input type="text" name="paytype" value="{{ expense.paytype if expense else '' }}">
+        <br><br>
+
+        <label>Комментарий:</label><br>
+        <textarea name="comment">{{ expense.comment if expense else '' }}</textarea>
+        <br><br>
+
+        <button type="submit">Сохранить</button>
+        <a href="{{ url_for('main.expense') }}">Отмена</a>
+    </form>
+{% endblock %}
