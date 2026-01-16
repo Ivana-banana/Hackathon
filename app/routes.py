@@ -1,4 +1,4 @@
-from flask import Blueprint, Flask, render_template, request, redirect, url_for
+from flask import Blueprint, Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy.sql.functions import current_user
 
 from app import db
@@ -14,13 +14,29 @@ def hello():
 def author():
     return render_template('author.html')
 
-@bp.route('/registration')
-def registration():
-    return 'Страница регистрации'
+@bp.route('/registration', methods=['GET', 'POST'])
+def registration(): #желательно в models.py добавить функцию для проверки того чтобы имя пользователя не повторялось
+    if request.method == 'POST':
+        username = request.form.get('name', '').strip()
+        password = request.form.get('password', '')
+        if not username or not password:
+            flash("Имя и пароль обязательны!")
+        else:
+            flash("Регистрация успешна! Теперь войдите.")
+            return redirect(url_for('login'))
+    return render_template('register.html')
 
-@bp.route('/login')
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
-    return 'Страница авторизации'
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        if verify_password(username, password): #Нужно добавить функцию верификации пароля в models.py
+            flash(f"Добро пожаловать, {username}!")
+            return redirect(url_for('main'))
+        else:
+            flash("Неверное имя пользователя или пароль!")
+    return render_template('login.html')
 
 #Реализация добавления/удаления расходов
 #READ

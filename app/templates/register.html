@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Приветствие</title>
+</head>
+<body>
+    <h2>Введите имя и пароль, который вы хотите использовать:</h2>
+    <form method="POST">
+    <label>Имя:<br><input type="text" name="name" required></label><br><br>
+    <label>Пароль:<br><input type="password" name="password" required></label><br><br>
+    <button type="submit">Зарегистрироваться</button>
+</form>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for msg in messages %}
+      <p style="color:red;">{{ msg }}</p>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+</body>
+</html>
