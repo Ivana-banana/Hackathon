@@ -1,8 +1,9 @@
-from flask import Blueprint, Flask, render_template, request, redirect, url_for
+from flask import Blueprint, Flask, render_template, request, redirect, url_for, flash
 from sqlalchemy.sql.functions import current_user
+from flask_login import login_user
 
 from app import db
-from app.models import Expense
+from app.models import Expense, User
 
 bp = Blueprint('main', __name__)
 
@@ -14,13 +15,39 @@ def hello():
 def author():
     return render_template('author.html')
 
-@bp.route('/registration')
+@bp.route('/registration', methods=['GET', 'POST'])
 def registration():
-    return 'Страница регистрации'
+    if request.method == 'POST':
+        username = request.form.get('name', '').strip()
+        password = request.form.get('password', '')
+        if not username or not password:
+            flash("Имя и пароль обязательны!")
+        elif len(username) < 3:
+            flash("Имя должно содержать хотя бы 3 символа.")
+        elif User.username_exists(username):
+            flash("Пользователь с таким именем уже существует!")
+        else:
+            new_user = User(username=username)
+            new_user.set_password(password)
+            db.session.add(new_user)
+            db.session.commit()
+            flash("Регистрация успешна! Теперь войдите.")
+            return redirect(url_for('main.login'))
+    return render_template('register.html')
 
-@bp.route('/login')
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
-    return 'Страница авторизации'
+    if request.method == 'POST':
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        user = User.get_by_username(username)
+        if user and user.check_password(password):
+            login_user(user)
+            flash(f"Добро пожаловать, {username}!")
+            return redirect(url_for('main.hello'))
+        else:
+            flash("Неверное имя пользователя или пароль!")
+    return render_template('login.html')
 
 #Реализация добавления/удаления расходов
 #READ
