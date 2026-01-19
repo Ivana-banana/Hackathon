@@ -18,7 +18,7 @@
             {% for expense in expenses %}
             <tr>
                 <td>{{ expense.date.strftime('%d.%m.%Y %H:%M') }}</td>
-                <td>{{ expense.category }}</td>
+                <td>{{ expense.category.name }}</td>
                 <td>{{ expense.amount }}</td>
                 <td>{{ expense.paytype }}</td>
                 <td>{{ expense.comment }}</td>

@@ -1,11 +1,10 @@
 from flask import Blueprint, Flask, render_template, request, redirect, url_for, flash
-from sqlalchemy.sql.functions import current_user
 from sqlalchemy import func
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import datetime, timedelta
 
 from app import db
-from app.models import Expense, User
+from app.models import Expense, User, Category
 
 bp = Blueprint('main', __name__)
 
@@ -23,10 +22,16 @@ def hello():
     my_count = Expense.query.filter(
         Expense.user_id == current_user.id, Expense.date >= week_ago).count() or 0
 
-    top_categories = (db.session.query(Expense.category, func.sum(Expense.amount).label('amount')).filter(
-        Expense.user_id == current_user.id, Expense.date >= week_ago).group_by(Expense.category)
+    top_categories = (db.session.query(
+        Category.name,
+        func.sum(Expense.amount).label('amount'))
+                      .join(Category, Expense.category_id == Category.id)
+                      .filter(Expense.user_id == current_user.id, Expense.date >= week_ago)
+                      .group_by(Category.name)
                       .order_by(func.sum(Expense.amount).desc())
-                      .limit(3).all())
+                      .limit(3)
+                      .all()
+                      )
 
     all_users_expenses = (db.session.query(User.username, func.sum(Expense.amount).label('amount'))
                           .join(Expense, User.id == Expense.user_id)
@@ -92,14 +97,21 @@ def expense():
 @bp.route('/expense/add', methods=['GET', 'POST'])
 @login_required
 def add_expense():
+    categories = Category.query.filter_by(user_id=current_user.id).all()
     if request.method == 'POST':
-        category = request.form.get('category')
+        category_name = request.form.get('category_name').strip()
         amount = float(request.form.get('amount'))
         comment = request.form.get('comment')
         paytype = request.form.get('paytype')
 
+        category = Category.query.filter_by(user_id=current_user.id, name=category_name).first()
+        if not category:
+            category = Category(name=category_name, user_id = current_user.id)
+            db.session.add(category)
+            db.session.commit()
+
         new_expense = Expense(
-            category = category,
+            category_id = category.id,
             amount = amount,
             comment = comment,
             paytype = paytype,
@@ -108,30 +120,40 @@ def add_expense():
         db.session.add(new_expense)
         db.session.commit()
         return redirect(url_for('main.expense'))
-    return render_template('expenses/form.html', legend = "Добавить расход")
+    return render_template('expenses/form.html',categories=categories, legend = "Добавить расход")
 
 #UPDATE
-#TODO продумать безопасность
 @bp.route('/expense/edit/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_expense(id):
     expense = Expense.query.get_or_404(id)
-
+    if expense.user_id != current_user.id:
+        return "Нельзя редактировать расход!", 403
+    categories = Category.query.filter_by(user_id=current_user.id).all()
     if request.method == 'POST':
         expense.amount = float(request.form.get('amount'))
         expense.comment = request.form.get('comment')
         expense.paytype = request.form.get('paytype')
-        expense.category = request.form.get('category')
+
+        category_name = request.form.get('category_name').strip()
+        category = Category.query.filter_by(user_id=current_user.id, name=category_name).first()
+        if not category:
+            category = Category(name=category_name, user_id = current_user.id)
+            db.session.add(category)
+            db.session.commit()
+        expense.category_id = category.id
         db.session.commit()
 
         return redirect(url_for('main.expense'))
-    return render_template('expenses/form.html', expense = expense, legend="Редактировать")
+    return render_template('expenses/form.html', expense = expense, categories=categories, legend="Редактировать")
 
 #DELETE
 @bp.route('/expense/delete/<int:id>', methods=['GET', 'POST'])
 @login_required
 def delete_expense(id):
     expense = Expense.query.get_or_404(id)
+    if expense.user_id != current_user.id:
+        return "Нельзя удалить расход!",403
     db.session.delete(expense)
     db.session.commit()
     return redirect(url_for('main.expense'))

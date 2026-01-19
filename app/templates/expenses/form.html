@@ -5,15 +5,39 @@
 
     <form method="POST">
         <label>Категория:</label><br>
-        <input type="text" name="category" value="{{ expense.category if expense else '' }}" required>
+        <input type="text"
+               name="category_name"
+               list="category_list"
+               value="{{ expense.category.name if expense else '' }}"
+               placeholder="Выберите или введите новую"
+               autocomplete="off"
+               required>
+        <datalist id="category_list">
+            {% for categ in categories %}
+                <option value="{{ categ.name }}"></option>
+            {% endfor %}
+        </datalist>
         <br><br>
 
         <label>Сумма:</label><br>
-        <input type="number" name="amount" step="0.01" value="{{ expense.amount if expense else '' }}" required>
+        <input type="number"
+               name="amount"
+               step="0.01"
+               value="{{ expense.amount if expense else '' }}"
+               required>
         <br><br>
 
         <label>Тип оплаты:</label><br>
-        <input type="text" name="paytype" value="{{ expense.paytype if expense else '' }}">
+        <select name="paytype">
+            <option value="Карта"
+            {% if expense and expense.paytype == 'Карта' %}selected{% endif %}>
+            Карта
+            </option>
+            <option value="Наличные"
+            {% if expense and expense.paytype == 'Наличные' %}selected{% endif %}>
+            Наличные
+            </option>
+        </select>
         <br><br>
 
         <label>Комментарий:</label><br>
