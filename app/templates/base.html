@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Контроль Расходов</title>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('main.hello') }}">На главную страницу</a> |
+        <a href="{{ url_for('main.expense') }}">Список расходов</a> |
+        <a href="{{ url_for('main.add_expense') }}">Добавить новый</a> |
+        <a href="{{ url_for('main.logout') }}">Выйти из аккаунта</a>
+    </nav>
+    <hr>
+
+    {% block content %}{% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Список моих расходов</h2>
+
+    <table border="1" cellpadding="5">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Категория</th>
+                <th>Сумма</th>
+                <th>Тип оплаты</th>
+                <th>Комментарий</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                <td>{{ expense.category.name }}</td>
+                <td>{{ expense.amount }}</td>
+                <td>{{ expense.paytype }}</td>
+                <td>{{ expense.comment }}</td>
+
+                <td>
+                    <a href="{{ url_for('main.edit_expense', id=expense.id) }}">Ред.</a>
+                    |
+                    <a href="{{ url_for('main.delete_expense', id=expense.id) }}" 
+                       onclick="return confirm('Удалить?');">Удал.</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6">Список пуст. Добавьте что-нибудь.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
