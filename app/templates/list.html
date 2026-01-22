@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .expenses-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .page-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 24px;
+        font-weight: 600;
+        text-align: center; /* ← Центрирование заголовка */
+    }
+
+    .expenses-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .expenses-table th {
+        background-color: #27ae60;
+        color: white;
+        padding: 14px 16px;
+        text-align: left;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    .expenses-table td {
+        padding: 14px 16px;
+        border-bottom: 1px solid #eee;
+        color: #333;
+    }
+
+    .expenses-table tr:last-child td {
+        border-bottom: none;
+    }
+
+    .expenses-table tr:hover {
+        background-color: #f9fbfa;
+    }
+
+    .action-links a {
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 600;
+        margin: 0 6px;
+        transition: color 0.2s;
+    }
+
+    .action-links a:hover {
+        color: #27ae60;
+        text-decoration: underline;
+    }
+
+    .empty-message {
+        text-align: center;
+        padding: 40px 20px;
+        color: #7f8c8d;
+        font-style: italic;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .amount-cell {
+        font-weight: bold;
+        color: #e74c3c;
+    }
+
+    .category-cell {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    @media (max-width: 768px) {
+        .expenses-table,
+        .expenses-table thead,
+        .expenses-table tbody,
+        .expenses-table th,
+        .expenses-table td,
+        .expenses-table tr {
+            display: block;
+        }
+
+        .expenses-table thead tr {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .expenses-table tr {
+            border: 1px solid #eee;
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .expenses-table td {
+            border: none;
+            position: relative;
+            padding-left: 50% !important;
+            text-align: right;
+        }
+
+        .expenses-table td:before {
+            content: attr(data-label);
+            position: absolute;
+            left: 16px;
+            top: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            text-align: left;
+        }
+
+        .action-links {
+            text-align: right;
+        }
+    }
+</style>
+
+<div class="expenses-container">
+    <h1 class="page-title">Список моих расходов</h1>
+
+    {% if expenses %}
+        <table class="expenses-table">
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Категория</th>
+                    <th>Сумма</th>
+                    <th>Тип оплаты</th>
+                    <th>Комментарий</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                <tr>
+                    <td data-label="Дата">{{ expense.date.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td data-label="Категория" class="category-cell">{{ expense.category.name }}</td>
+                    <td data-label="Сумма" class="amount-cell">{{ expense.amount }} ₽</td>
+                    <td data-label="Тип оплаты">{{ expense.paytype }}</td>
+                    <td data-label="Комментарий">{{ expense.comment or '—' }}</td>
+                    <td data-label="Действия" class="action-links">
+                        <a href="{{ url_for('main.edit_expense', id=expense.id) }}">Ред.</a>
+                        |
+                        <a href="{{ url_for('main.delete_expense', id=expense.id) }}"
+                           onclick="return confirm('Вы уверены, что хотите удалить эту запись?');">Удал.</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="empty-message">
+            📭 Список пуст. Добавьте свой первый расход!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

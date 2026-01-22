@@ -2,18 +2,122 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Контроль Расходов</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fbfd;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Навигация */
+        nav {
+            background: linear-gradient(135deg, #1e5799, #207cca, #2989d8);
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            color: white;
+            font-weight: 700;
+            font-size: 1.4rem;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.92);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 10px;
+            border-radius: 6px;
+            transition: all 0.25s ease;
+            font-size: 1.02rem;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        .nav-links a.active {
+            background: rgba(255, 255, 255, 0.25);
+            font-weight: 600;
+        }
+
+        hr {
+            display: none; /* Убираем стандартный разделитель — он больше не нужен */
+        }
+
+        /* Основной контент */
+        .content-wrapper {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 12px 16px;
+            }
+
+            .nav-links {
+                gap: 12px;
+                margin-top: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-logo {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('main.hello') }}">На главную страницу</a> |
-        <a href="{{ url_for('main.expense') }}">Список расходов</a> |
-        <a href="{{ url_for('main.add_expense') }}">Добавить новый</a> |
-        <a href="{{ url_for('main.logout') }}">Выйти из аккаунта</a>
+        <div class="nav-container">
+            <a href="{{ url_for('main.hello') }}" class="nav-logo">💰 Контроль расходов</a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('main.hello') }}">Главная</a></li>
+                <li><a href="{{ url_for('main.expense') }}">Расходы</a></li>
+                <li><a href="{{ url_for('main.add_expense') }}">Добавить</a></li>
+                <li><a href="{{ url_for('main.author') }}">Об авторах</a></li>
+                <li><a href="{{ url_for('main.logout') }}">Выйти</a></li>
+            </ul>
+        </div>
     </nav>
-    <hr>
 
-    {% block content %}{% endblock %}
-
+    <div class="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>
