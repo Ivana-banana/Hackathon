@@ -85,13 +85,32 @@ def logout():
     flash("Вы успешно вышли из аккаунта!")
     return redirect(url_for('main.login'))
 
-#Реализация добавления/удаления расходов
+#Реализация добавления/удаления/фильтрования расходов
 #READ
-@bp.route('/expense')
+@bp.route('/expense', methods=['GET', 'POST'])
 @login_required
 def expense():
-    my_expense = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
-    return render_template('list.html', expenses = my_expense)
+    start_date_str = request.args.get('start_date')
+    end_date_str = request.args.get('end_date')
+    category_id = request.args.get('category_id', type=int)
+
+    query = Expense.query.filter_by(user_id=current_user.id)
+
+    if start_date_str:
+        start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+        query = query.filter(Expense.date >= start_date)
+    if end_date_str:
+        end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
+        # Добавляем время до конца дня
+        end_date = end_date.replace(hour=23, minute=59, second=59)
+        query = query.filter(Expense.date <= end_date)
+    if category_id:
+        query = query.filter(Expense.category_id == category_id)
+
+    expenses = query.order_by(Expense.date.desc()).all()
+    all_categories = Category.query.all()
+    return render_template('list.html', expenses=expenses, all_categories=all_categories)
+
 
 #CREATE
 @bp.route('/expense/add', methods=['GET', 'POST'])
