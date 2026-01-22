@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    .about-container {
+        max-width: 800px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .team-logo {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #27ae60;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        margin-bottom: 24px;
+        transition: transform 0.3s ease;
+    }
+
+    .team-logo:hover {
+        transform: scale(1.05) rotate(3deg);
+    }
+
+    .about-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        margin-bottom: 16px;
+        font-weight: 700;
+    }
+
+    .about-subtitle {
+        font-size: 1.2rem;
+        color: #34495e;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+
+    .team-section {
+        margin-top: 32px;
+    }
+
+    .team-title {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .team-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .team-member {
+        background: #f8fafc;
+        padding: 14px 24px;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        font-size: 1.1rem;
+        color: #2d3748;
+        transition: transform 0.2s, box-shadow 0.2s;
+        text-decoration: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .team-member:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        background: #edf2f7;
+        color: #27ae60;
+    }
+
+    .member-name {
+        font-weight: 600;
+    }
+
+    .github-link {
+        color: #3498db;
+        text-decoration: none;
+        font-size: 0.95rem;
+        opacity: 0.85;
+        transition: opacity 0.2s;
+    }
+
+    .github-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+
+    .highlight {
+        color: #27ae60;
+        font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+        .team-logo {
+            width: 120px;
+            height: 120px;
+        }
+        .about-title {
+            font-size: 1.8rem;
+        }
+        .about-subtitle {
+            font-size: 1rem;
+        }
+        .team-member {
+            padding: 12px 16px;
+            font-size: 1rem;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .github-link {
+            margin-top: 4px;
+        }
+    }
+</style>
+
+<div class="about-container">
+    <img src="{{ url_for('static', filename='Webfrogs.jpg') }}" alt="Логотип команды WebFrogs" class="team-logo">
+
+    <h1 class="about-title">Команда <span class="highlight">WebFrogs</span></h1>
+
+    <p class="about-subtitle">
+        Наше приложение для личных финансов разработано с использованием фреймворка <strong>Flask</strong>.
+        Ведение проекта осуществляется по методологии <strong>GitHub Flow</strong> — гибко, прозрачно и эффективно.
+    </p>
+
+    <div class="team-section">
+        <h2 class="team-title">Состав команды WebFrogs</h2>
+        <ul class="team-list">
+            <li><a href="https://github.com/Ivana-banana" class="team-member">
+                <span class="member-name">Пушкин Иван</span>
+                <span class="github-link">@Ivana-banana</span>
+            </a></li>
+            <li><a href="https://github.com/IMaSKoT" class="team-member">
+                <span class="member-name">Седов Максим</span>
+                <span class="github-link">@IMaSKoT</span>
+            </a></li>
+            <li><a href="https://github.com/slw0000" class="team-member">
+                <span class="member-name">Голубев Артём</span>
+                <span class="github-link">@slw0000</span>
+            </a></li>
+            <li><a href="https://github.com/NikitaKondrat" class="team-member">
+                <span class="member-name">Кондрат Никита</span>
+                <span class="github-link">@NikitaKondrat</span>
+            </a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

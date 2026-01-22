@@ -38,13 +38,13 @@ def hello():
                           .filter(Expense.date >= month_ago).group_by(User.username)
                           .order_by(func.sum(Expense.amount).desc()).all())
 
-    return render_template('expenses/main.html',
+    return render_template('main.html',
                            user=current_user, my_total=my_total, my_count=my_count,
                            top_categories=top_categories, all_users_expenses=all_users_expenses)
 
 @bp.route('/author')
 def author():
-    return render_template('expenses/author.html')
+    return render_template('author.html')
 
 @bp.route('/registration', methods=['GET', 'POST'])
 def registration():
@@ -91,7 +91,7 @@ def logout():
 @login_required
 def expense():
     my_expense = Expense.query.filter_by(user_id=current_user.id).order_by(Expense.date.desc()).all()
-    return render_template('expenses/list.html', expenses = my_expense)
+    return render_template('list.html', expenses = my_expense)
 
 #CREATE
 @bp.route('/expense/add', methods=['GET', 'POST'])
@@ -120,7 +120,7 @@ def add_expense():
         db.session.add(new_expense)
         db.session.commit()
         return redirect(url_for('main.expense'))
-    return render_template('expenses/form.html',categories=categories, legend = "Добавить расход")
+    return render_template('form.html',categories=categories, legend = "Добавить расход")
 
 #UPDATE
 @bp.route('/expense/edit/<int:id>', methods=['GET', 'POST'])
@@ -145,7 +145,7 @@ def edit_expense(id):
         db.session.commit()
 
         return redirect(url_for('main.expense'))
-    return render_template('expenses/form.html', expense = expense, categories=categories, legend="Редактировать")
+    return render_template('form.html', expense = expense, categories=categories, legend="Редактировать")
 
 #DELETE
 @bp.route('/expense/delete/<int:id>', methods=['GET', 'POST'])
