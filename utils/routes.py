@@ -1,10 +1,10 @@
-from flask import Blueprint, Flask, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from sqlalchemy import func
 from flask_login import login_user, login_required, logout_user, current_user
 from datetime import datetime, timedelta
 
 from app import db
-from app.models import Expense, User, Category
+from models import Expense, User, Category
 
 bp = Blueprint('main', __name__)
 
