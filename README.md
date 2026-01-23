@@ -135,3 +135,5 @@
 
 
 ### 6.Ссылка на полный скринкаст
+
+https://disk.yandex.ru/i/CCHb54jn2i6Oqg
